@@ -10,18 +10,15 @@ const listingSchema = new Schema({
   image: {
   filename: {
     type: String,
-    default: "listing_image",
+    default: "listing_image"
   },
   url: {
     type: String,
-    default:
-      "https://unsplash.com/photos/photo-of-brown-bench-near-swimming-pool-Koei_7yYtIo",
-    set: (v) =>
-      v === ""
-        ? "https://unsplash.com/photos/photo-of-brown-bench-near-swimming-pool-Koei_7yYtIo"
-        : v,
-  },
+    default: "/css/default_img.jpg", 
+    set: (v) => v === "" ? "/css/default_img.jpg" : v
+  }
 },
+
 
   price: Number,
   location: String,
