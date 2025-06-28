@@ -12,8 +12,11 @@
             <div class="card-img-overlay">abcd</div>
             <div class="card-body">
                 <p class="card-text">
-                    <%= listing.title %> <br>
-                    <%= listing.price.toLocaleString("en-IN") %>/night
+                    <% if (listing.price != null) { %>
+                    ₹<%= listing.price.toLocaleString("en-IN") %>/night
+                    <% } else { %>
+                    <span class="text-muted">Price not available</span>
+                    <% } %>
 
                 </p>
 
