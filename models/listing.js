@@ -18,13 +18,22 @@ const listingSchema = new Schema({
     set: (v) => v === "" ? "/css/default_img.jpg" : v
   }
 },
-
-
   price: Number,
   location: String,
   country: String,
+  reviews :[
+    {
+      type : Schema.Types.ObjectId,
+      ref :"Review",
+
+    }
+  ]
 }, { timestamps: true });
 
 const Listing = mongoose.model("Listing", listingSchema);
 module.exports = Listing;
 
+
+
+
+ 
