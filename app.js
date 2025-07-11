@@ -5,6 +5,8 @@
 
 
   const ExpressError = require("./utils/ExpressError.js");
+  const session = require("express-session");
+  const flash = require("connect-flash");
 
   const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 
@@ -34,11 +36,30 @@
   app.engine('ejs',ejsMate);
   app.use(express.static(path.join(__dirname,"/public")));
 
+ const sessionOptions = {
+  secret : "mysupersecretcode",
+  resave : false,
+  saveUninitialized : true,
+  cookie :{
+    expires : Date.now() + 7 * 24 * 60 * 60 * 1000,
+    maxAge : 7 * 24 * 60 *60 *1000,
+    httpOnly : true ,
+  },
 
+ };
   app.get("/", (req, res) => {
     res.send("Hi , I am root");
   });
 
+ app.use(session(sessionOptions));
+ app.use(flash());
+
+app.use((req,res,next)=>{
+    res.locals.success = req.flash("success");
+    res.locals.error = req.flash("error"); 
+
+    next();
+});
   //Middleware 
   const validateListing = (req,res,next)=>{
         let {error} = listingSchema.validate(req.body);
@@ -75,13 +96,12 @@
   //     next(new ExpressError(404,"Page Not Found!"));
   // });
 
-
-
   app.use((err,req,res,next)=>{
     let{statusCode = 500 , message = "Something went wrong!"} = err;
     // res.status(statusCode).send(message);
       res.status(statusCode).render("error.ejs",{err});
   });
+
 
   app.listen(8080, () => {
     console.log("server is listening to port 8080");

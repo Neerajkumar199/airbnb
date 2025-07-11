@@ -37,23 +37,16 @@
       </div>
 
       <!-- Image -->
+      <div class="mb-3 col-md-4">
+        <label for="image" class="form-label">Original Image:-</label>
+        <br>
+        <img src="<%= listing.image.url %>" class="mb-3" alt="original_image" />
 
-       <div class="mb-3">
-        <label for="image" class="form-label">Image Link</label>
-        <input
-          id="image"
-          name="listing[image]"
-          value="<%= listing.image ? listing.image.url : '' %>"
-          type="text"
-          class="form-control"
-          required
-        />
-
-
-        <div class="invalid-feedback">Please provide a valid image URL</div>
       </div>
 
-      <div class="row">
+      <label for="image" class="form-label">Upload new Image:-</label>
+      <input type="text" name="listing[image][url]" value="<%= listing.image.url %>" />
+
 
         <!-- Price -->
         <div class="mb-3 col-md-4">
