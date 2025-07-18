@@ -1,4 +1,4 @@
-<% layout("layouts/boilerplate") %>  
+<% layout("layouts/boilerplate") %>
 
 <div class="row mt-3">
   <div class="col-8 offset-2">
@@ -30,9 +30,27 @@
         <h4>Leave a Review</h4>
         <form action="/listings/<%= listing.id %>/reviews" method="POST" novalidate class="needs-validation">
           <div class="mb-3 mt-3">
-            <label for="rating" class="form-label">Rating</label>
-            <input type="range" min="1" max="5" id="rating" name="rating" class="form-range" />
+            <label class="form-label">Rating</label>
+            <fieldset class="starability-slot">
+            
+              <input type="radio" id="no-rate" class="input-no-rate" name="rating" value="1" checked aria-label="No rating." />
+              <input type="radio" id="rate1" name="rating" value="1" />
+              <label for="rate1" title="Terrible">1 star</label>
+
+              <input type="radio" id="rate2" name="rating" value="2" />
+              <label for="rate2" title="Not good">2 stars</label>
+
+              <input type="radio" id="rate3" name="rating" value="3" />
+              <label for="rate3" title="Average">3 stars</label>
+
+              <input type="radio" id="rate4" name="rating" value="4" />
+              <label for="rate4" title="Very good">4 stars</label>
+
+              <input type="radio" id="rate5" name="rating" value="5" />
+              <label for="rate5" title="Amazing">5 stars</label>
+            </fieldset>
           </div>
+
           <div class="mb-3 mt-3">
             <label for="comment" class="form-label">Comments</label>
             <textarea name="comment" id="comment" cols="30" rows="5" class="form-control" required></textarea>
@@ -48,8 +66,8 @@
           <div class="card col-5 ms-3 mb-3">
             <div class="card-body">
               <h5 class="card-title"><%= review.author.username %></h5>
+              <div class="starability-result" data-rating="<%= review.rating %>"></div>
               <p class="card-text"><%= review.comment %></p>
-              <p class="card-text"><%= review.rating %> Stars</p>
               <form class="mb-3" method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
                 <button class="btn btn-sm btn-dark">Delete</button>
               </form>
