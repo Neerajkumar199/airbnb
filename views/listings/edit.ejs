@@ -6,8 +6,8 @@
     <h3>Edit your Listing</h3>
 
     <form method="POST" action="/listings/<%= listing._id %>?_method=PUT"
-      novalidate class="needs-validation">
-      
+      novalidate class="needs-validation" enctype = "multipart/form-data">
+
       <!----  Title  --->
 
       <div class="mb-3">
@@ -37,16 +37,22 @@
       </div>
 
       <!-- Image -->
-      <div class="mb-3 col-md-4">
-        <label for="image" class="form-label">Original Image:-</label>
-        <br>
-        <img src="<%= listing.image.url %>" class="mb-3" alt="original_image" />
+       <div>
+                   <label class="form-label mb-0">Original Listing Image :-</label>
+       </div>
+       <br>
+       <div class="mb-3 d-flex align-items-center gap-3">
+
+        <img src="<%= originalImageUrl%>" class="img-thumbnail" style="max-width: 250px;" alt="listing image" />
+        
+       </div>
+
+      <div  class ="mb-3">
+          <label for="image" class="form-label">Upload New Image:-</label>
+          <input type="file" name="image"  class="form-control" />
 
       </div>
-
-      <label for="image" class="form-label">Upload new Image:-</label>
-      <input type="text" name="listing[image][url]" value="<%= listing.image.url %>" />
-
+    
 
         <!-- Price -->
         <div class="mb-3 col-md-4">
@@ -76,9 +82,7 @@
           />
           <div class="invalid-feedback">Country name should be valid</div>
         </div>
-      </div>
-
-      <!-- Location -->
+        <!-- Location -->
 
       <div class="mb-3">
         <label for="location" class="form-label">Location</label>
@@ -92,9 +96,15 @@
         />
         <div class="invalid-feedback">Location should be valid</div>
       </div>
-
+       
+      
       <!-- Submit -->
       <button class="btn btn-dark edit-btn mt-3">Edit</button>
+      
+      
+      </div>
+
+
       
     </form>
   </div>
