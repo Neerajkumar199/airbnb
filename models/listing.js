@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Review = require("./review.js"); 
+const Review = require("./review.js");
 
 const listingSchema = new Schema({
   title: {
@@ -9,42 +9,35 @@ const listingSchema = new Schema({
   },
   description: String,
   image: {
-  filename: {
-    type: String,
-    default: "listing_image"
+    url: String,
+    filename: String,
   },
-  url: {
-    type: String,
-    default: "/css/default_img.jpg", 
-    set: (v) => v === "" ? "/css/default_img.jpg" : v
-  }
-},
   price: Number,
   location: String,
   country: String,
-  reviews :[
+  reviews: [
     {
-      type : Schema.Types.ObjectId,
-      ref :"Review",
-
+      type: Schema.Types.ObjectId,
+      ref: "Review",
     },
   ],
-  owner :{
-    type : Schema.Types.ObjectId,
-    ref : "User",
-    
-  }
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+  },
 }, { timestamps: true });
-// Mongoose Middleware 
-listingSchema.post("findOneAndDelete", async(listing)=>{
-   if(listing){
-     await Review.deleteMany({_id : {$in : listing.reviews}});
-   }
+
+// Mongoose Middleware to delete associated reviews
+listingSchema.post("findOneAndDelete", async function (doc) {
+  if (doc) {
+    await Review.deleteMany({
+      _id: { $in: doc.reviews },
+    });
+  }
 });
 
 const Listing = mongoose.model("Listing", listingSchema);
 module.exports = Listing;
-
 
 
 
