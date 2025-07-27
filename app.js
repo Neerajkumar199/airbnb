@@ -24,8 +24,7 @@ const userRouter = require("./routes/user.js");
 
 const dbUrl = process.env.ATLASDB_URL;
 
-
-// ✅ Fix: Typo in view engine setup (space removed)
+// View engine setup
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -36,20 +35,20 @@ app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 
 const store = MongoStore.create({
-  mongoUrl : dbUrl,
-  crypto :{
-    secret : process.env.SECRET,
+  mongoUrl: dbUrl,
+  crypto: {
+    secret: process.env.SECRET,
   },
-  touchAfter : 24*3600,
+  touchAfter: 24 * 3600,
 });
 
-store.on("error",()=>{
-
-  console.log("ERROR in MONGO SESSION STORE",err);
+store.on("error", (err) => {
+  console.log("ERROR in MONGO SESSION STORE", err);
 });
+
 const sessionOptions = {
   store,
-  secret:  process.env.SECRET,
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -58,7 +57,6 @@ const sessionOptions = {
     httpOnly: true,
   },
 };
-
 
 app.use(session(sessionOptions));
 app.use(flash());
@@ -77,9 +75,8 @@ app.use((req, res, next) => {
 });
 
 const { listingSchema } = require("./schema.js");
-const { reviewSchema } = require("./schema.js"); // ✅ Fix: Ensure schemas are imported
+const { reviewSchema } = require("./schema.js");
 
-// ✅ Moved validation middleware out for clarity
 const validateListing = (req, res, next) => {
   const { error } = listingSchema.validate(req.body);
   if (error) {
@@ -98,37 +95,33 @@ const validateReview = (req, res, next) => {
   next();
 };
 
-// app.get("/", (req, res) => {
-//   res.send("Hi, I am root");
-// });
+// ✅ Added root route for Render deployment
+app.get("/", (req, res) => {
+  res.send("🎉 Welcome to HostelHub! Server is Live.");
+});
 
 // Routes
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);
 
-// ✅ Uncomment this later when 404 handling needed
-// app.all("*", (req, res, next) => {
-//   next(new ExpressError(404, "Page Not Found!"));
-// });
-
+// Error handler
 app.use((err, req, res, next) => {
   const { statusCode = 500, message = "Something went wrong!" } = err;
   res.status(statusCode).render("error.ejs", { err });
 });
 
-// const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
-
-
+// DB connection
 async function main() {
   await mongoose.connect(dbUrl);
   console.log("Connected to DB");
 }
-
 main().catch((err) => {
   console.log("Connection error:", err);
 });
 
-app.listen(8080, () => {
-  console.log("Server is listening on port 8080");
+// ✅ Use Render-compatible dynamic port
+const port = process.env.PORT || 8080;
+app.listen(port, () => {
+  console.log(`Server is listening on port ${port}`);
 });
