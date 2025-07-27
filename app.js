@@ -96,9 +96,9 @@ const validateReview = (req, res, next) => {
 };
 
 // ✅ Added root route for Render deployment
-app.get("/", (req, res) => {
-  res.send("🎉 Welcome to HostelHub! Server is Live.");
-});
+// app.get("/", (req, res) => {
+//   res.send("🎉 Welcome to HostelHub! Server is Live.");
+// });
 
 // Routes
 app.use("/listings", listingRouter);
