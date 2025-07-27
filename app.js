@@ -10,6 +10,7 @@ const path = require("path");
 const methodOverride = require("method-override");
 
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -21,6 +22,9 @@ const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 
+const dbUrl = process.env.ATLASDB_URL;
+
+
 // ✅ Fix: Typo in view engine setup (space removed)
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
@@ -31,8 +35,21 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 
+const store = MongoStore.create({
+  mongoUrl : dbUrl,
+  crypto :{
+    secret : process.env.SECRET,
+  },
+  touchAfter : 24*3600,
+});
+
+store.on("error",()=>{
+
+  console.log("ERROR in MONGO SESSION STORE",err);
+});
 const sessionOptions = {
-  secret: "mysupersecretcode",
+  store,
+  secret:  process.env.SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -41,6 +58,7 @@ const sessionOptions = {
     httpOnly: true,
   },
 };
+
 
 app.use(session(sessionOptions));
 app.use(flash());
@@ -80,9 +98,9 @@ const validateReview = (req, res, next) => {
   next();
 };
 
-app.get("/", (req, res) => {
-  res.send("Hi, I am root");
-});
+// app.get("/", (req, res) => {
+//   res.send("Hi, I am root");
+// });
 
 // Routes
 app.use("/listings", listingRouter);
@@ -99,10 +117,11 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render("error.ejs", { err });
 });
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+// const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+
 
 async function main() {
-  await mongoose.connect(MONGO_URL);
+  await mongoose.connect(dbUrl);
   console.log("Connected to DB");
 }
 
