@@ -5,6 +5,7 @@ const ExpressError = require("./utils/ExpressError.js");
 
 // ✅ Checks if user is logged in
 module.exports.isLoggedIn = (req, res, next) => {
+    console.log(req.originalUrl);
     if (!req.isAuthenticated()) {
         req.session.redirectUrl = req.originalUrl; // Save the original URL
         req.flash("error", "You must be logged in to create a listing!");
